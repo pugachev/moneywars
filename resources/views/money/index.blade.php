@@ -7,7 +7,7 @@
     <title>タイトル</title>
   </head>
   <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-danger">
         <a href="#" class="navbar-brand">Navbar</a>
         <button class="navbar-toggler" type="button"
             data-toggle="collapse"
