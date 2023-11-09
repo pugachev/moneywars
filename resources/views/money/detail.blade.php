@@ -1,6 +1,4 @@
 <?php
-//   $tgt_date = json_encode($tgt_date);
-//   $tgt_sumvalue = json_encode($tgt_sumvalue);
   $cate_data="";
   //戻りがオブジェクト型
   foreach($categories as $val){

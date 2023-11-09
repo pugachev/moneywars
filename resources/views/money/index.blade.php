@@ -1,9 +1,7 @@
 <?php
   $firstDate = $tgt_date[0];
-  // dd($firstDate);
   $tgt_date = json_encode($tgt_date);
   $tgt_sumvalue = json_encode($tgt_sumvalue);
-  // dd($tgt_date,$tgt_sumvalue);
   $cate_data="";
   //戻りがオブジェクト型
   foreach($categories as $val){
@@ -53,9 +51,11 @@
                 </div>
                 <div class="justify-content-center">
                   <label class="col-form-label">月間目標値</label>
-                  <label class="col-form-label"><mark><strong>20000</strong></mark></label>
-                  <label class="col-form-label">11月合計</label>
-                  <label class="col-form-label"><mark><strong>18000</strong></mark></label>
+                  <label class="col-form-label"><mark><strong>100,000</strong></mark></label>
+                </div>
+                <div class="justify-content-center">
+                  <label class="col-form-label"><?php echo date('m'); ?>月合計</label>
+                  <label class="col-form-label"><mark><strong><?php echo number_format($actualresults) ?></strong></mark></label>
                 </div>
                 <div class="justify-content-center">
                   <form method="post" action="{{route('money.nextweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
@@ -65,7 +65,7 @@
                   </form>
                 </div>
               </div>
-              <div class="container" style="text-align:center;">
+              <div class="container" style="text-align:center;position: relative; width: 100%;aspect-ratio: 1.7;">
                   <canvas id="myChart"></canvas>
               </div>
           </div>
@@ -123,6 +123,8 @@
               display: false,
               text: '支店別 来客数'
             },
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
               x: {
                 display: true,

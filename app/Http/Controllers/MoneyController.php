@@ -43,6 +43,15 @@ class MoneyController extends Controller
             array_push($tgt_sumvalue,$result['sumvalue']);
         }
 
+        //指定月間の合計値の取得
+        $tmpactualresults=Spending::select(DB::raw('sum(tgt_payment) as sumvalue'))
+        ->where('tgt_date','like','%'.date('Y-m').'%')
+        ->get();
+
+        foreach($tmpactualresults as $val){
+            $actualresults = $val['sumvalue'];
+        }
+
         //データ不足箇所を0詰め
         for($i=count($tgt_sumvalue);$i<7;$i++){
             array_push($tgt_sumvalue,0);
@@ -54,7 +63,7 @@ class MoneyController extends Controller
         ->get();
         
         // dd($tgt_date);
-        return view('money.index',compact('tgt_date','tgt_sumvalue','categories'));
+        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
     }
 
     /**
@@ -188,12 +197,21 @@ class MoneyController extends Controller
             array_push($tgt_sumvalue,$val);
         }
     
+        //指定月間の合計値の取得
+        $tmpactualresults=Spending::select(DB::raw('sum(tgt_payment) as sumvalue'))
+        ->where('tgt_date','like','%'.date('Y-m').'%')
+        ->get();
+
+        foreach($tmpactualresults as $val){
+            $actualresults = $val['sumvalue'];
+        }
+
         $categories = DB::table('categories')
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
         
-        return view('money.index',compact('tgt_date','tgt_sumvalue','categories'));
+        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
     }
 
     public function nextweek(Request $request){
@@ -237,12 +255,21 @@ class MoneyController extends Controller
             array_push($tgt_sumvalue,$val);
         }
     
+        //指定月間の合計値の取得
+        $tmpactualresults=Spending::select(DB::raw('sum(tgt_payment) as sumvalue'))
+        ->where('tgt_date','like','%'.date('Y-m').'%')
+        ->get();
+
+        foreach($tmpactualresults as $val){
+            $actualresults = $val['sumvalue'];
+        }
+
         $categories = DB::table('categories')
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
         
-        return view('money.index',compact('tgt_date','tgt_sumvalue','categories'));
+        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
 
     }
 }
