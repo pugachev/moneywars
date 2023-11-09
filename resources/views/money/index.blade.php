@@ -1,5 +1,6 @@
 <?php
   $firstDate = $tgt_date[0];
+  // dd($firstDate);
   $tgt_date = json_encode($tgt_date);
   $tgt_sumvalue = json_encode($tgt_sumvalue);
   // dd($tgt_date,$tgt_sumvalue);

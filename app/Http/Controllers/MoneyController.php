@@ -53,7 +53,7 @@ class MoneyController extends Controller
         ->orderBy('cate_num','asc')
         ->get();
         
-
+        // dd($tgt_date);
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories'));
     }
 
@@ -151,7 +151,8 @@ class MoneyController extends Controller
 
         $start_day = date("Y-m-d",strtotime("-7 day",strtotime($request->preweek)));
         $tgt_date = array();
-        $tgt_sumvalue = array_fill(0,6,0);
+        $tgt_sumvalue = array();
+        $tmp = array();
 
         $end_day = date('Y-m-d', strtotime("+6 day", strtotime($start_day)));
 
@@ -162,43 +163,36 @@ class MoneyController extends Controller
             }
         }
 
+        if(is_array($tgt_date)){
+            $targetDate = $start_day;
+            for($i=0;$i<7;$i++){
+                $tmp[date("Y-m-d",strtotime("+{$i} day",strtotime($targetDate)))]=0;
+            }
+        }
+        
         //指定週間のデータ取得
         $results=Spending::groupBy('tgt_date')
         ->select('tgt_date',DB::raw('sum(tgt_payment) as sumvalue'))
         ->whereBetween('tgt_date',[$start_day,$end_day])
         ->get();
 
-        // foreach($tgt_date as $date){
-        //     foreach ($results as $result) {
-        //         if($result['tgt_date']==$date){
-        //             array_push($tgt_sumvalue,$result['sumvalue']);
-        //         }
-        //     }
-        // }
-
-        foreach($results as $result){
-            foreach($tgt_date as $date){
-                if($result['tgt_date'] == $date){
-                    array_push($tgt_sumvalue,$result['sumvalue']);
-                }else{
-                    array_push($tgt_sumvalue,0);
+        foreach($tmp as $key => $val){
+            foreach ($results as $result) {
+                if($result['tgt_date']==$key){
+                    $tmp[$key] = $result['sumvalue'];
                 }
             }
         }
-        
-        dd($tgt_sumvalue);
-        // dd($tgt_sumvalue);
-        //データ不足箇所を0詰め
-        for($i=count($tgt_sumvalue);$i<7;$i++){
-            array_push($tgt_sumvalue,0);
+
+        foreach($tmp as $val){
+            array_push($tgt_sumvalue,$val);
         }
-        // dd($tgt_sumvalue);
+    
         $categories = DB::table('categories')
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
         
-
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories'));
     }
 
@@ -220,14 +214,12 @@ class MoneyController extends Controller
         }
 
         
-
         //指定週間のデータ取得
         $results=Spending::groupBy('tgt_date')
         ->select('tgt_date',DB::raw('sum(tgt_payment) as sumvalue'))
         ->whereBetween('tgt_date',[$start_day,$end_day])
         ->get();
 
-        
 
         foreach ($results as $result) {
             array_push($tgt_sumvalue,$result['sumvalue']);

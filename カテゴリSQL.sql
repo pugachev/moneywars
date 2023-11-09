@@ -45,3 +45,5 @@ SELECT tgt_date,sum(tgt_payment) FROM `spendings` WHERE tgt_date BETWEEN '2023-1
 
 
 ALTER TABLE spendings ADD tgt_name text; 
+
+Log::debug([$tgtdate,$result['sumvalue']]);
