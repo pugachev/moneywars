@@ -2,6 +2,7 @@
   $firstDate = $tgt_date[0];
   $tgt_date = json_encode($tgt_date);
   $tgt_sumvalue = json_encode($tgt_sumvalue);
+  // dd($tgt_date,$tgt_sumvalue);
   $cate_data="";
   //戻りがオブジェクト型
   foreach($categories as $val){
@@ -47,6 +48,12 @@
                     <button id="preweek" type="submit" class="btn btn-outline-danger btn-lg">前週</button>
                     <input type="hidden" value='<?php echo $firstDate; ?>' name="preweek">
                   </form>
+                </div>
+                <div class="justify-content-center">
+                  <label class="col-form-label">月間目標値</label>
+                  <label class="col-form-label"><mark><strong>20000</strong></mark></label>
+                  <label class="col-form-label">11月合計</label>
+                  <label class="col-form-label"><mark><strong>18000</strong></mark></label>
                 </div>
                 <div class="justify-content-center">
                   <form method="post" action="{{route('money.nextweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">

@@ -151,8 +151,8 @@ class MoneyController extends Controller
 
         $start_day = date("Y-m-d",strtotime("-7 day",strtotime($request->preweek)));
         $tgt_date = array();
-        $tgt_sumvalue = array();
-        
+        $tgt_sumvalue = array_fill(0,6,0);
+
         $end_day = date('Y-m-d', strtotime("+6 day", strtotime($start_day)));
 
         if(is_array($tgt_date) && empty($tgt_date)){
@@ -168,15 +168,31 @@ class MoneyController extends Controller
         ->whereBetween('tgt_date',[$start_day,$end_day])
         ->get();
 
-        foreach ($results as $result) {
-            array_push($tgt_sumvalue,$result['sumvalue']);
-        }
+        // foreach($tgt_date as $date){
+        //     foreach ($results as $result) {
+        //         if($result['tgt_date']==$date){
+        //             array_push($tgt_sumvalue,$result['sumvalue']);
+        //         }
+        //     }
+        // }
 
+        foreach($results as $result){
+            foreach($tgt_date as $date){
+                if($result['tgt_date'] == $date){
+                    array_push($tgt_sumvalue,$result['sumvalue']);
+                }else{
+                    array_push($tgt_sumvalue,0);
+                }
+            }
+        }
+        
+        dd($tgt_sumvalue);
+        // dd($tgt_sumvalue);
         //データ不足箇所を0詰め
         for($i=count($tgt_sumvalue);$i<7;$i++){
             array_push($tgt_sumvalue,0);
         }
-
+        // dd($tgt_sumvalue);
         $categories = DB::table('categories')
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
@@ -210,6 +226,8 @@ class MoneyController extends Controller
         ->select('tgt_date',DB::raw('sum(tgt_payment) as sumvalue'))
         ->whereBetween('tgt_date',[$start_day,$end_day])
         ->get();
+
+        
 
         foreach ($results as $result) {
             array_push($tgt_sumvalue,$result['sumvalue']);
