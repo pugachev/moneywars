@@ -198,12 +198,11 @@ class MoneyController extends Controller
 
     public function nextweek(Request $request){
 
-        
-
-        $start_day = date("Y-m-d",strtotime("+7 day",strtotime($request->nextweek))).PHP_EOL;
+        $start_day = date("Y-m-d",strtotime("+7 day",strtotime($request->nextweek)));
         $tgt_date = array();
         $tgt_sumvalue = array();
-        
+        $tmp = array();
+
         $end_day = date('Y-m-d', strtotime("+6 day", strtotime($start_day)));
 
         if(is_array($tgt_date) && empty($tgt_date)){
@@ -213,6 +212,12 @@ class MoneyController extends Controller
             }
         }
 
+        if(is_array($tgt_date)){
+            $targetDate = $start_day;
+            for($i=0;$i<7;$i++){
+                $tmp[date("Y-m-d",strtotime("+{$i} day",strtotime($targetDate)))]=0;
+            }
+        }
         
         //指定週間のデータ取得
         $results=Spending::groupBy('tgt_date')
@@ -220,22 +225,24 @@ class MoneyController extends Controller
         ->whereBetween('tgt_date',[$start_day,$end_day])
         ->get();
 
-
-        foreach ($results as $result) {
-            array_push($tgt_sumvalue,$result['sumvalue']);
+        foreach($tmp as $key => $val){
+            foreach ($results as $result) {
+                if($result['tgt_date']==$key){
+                    $tmp[$key] = $result['sumvalue'];
+                }
+            }
         }
 
-        //データ不足箇所を0詰め
-        for($i=count($tgt_sumvalue);$i<7;$i++){
-            array_push($tgt_sumvalue,0);
+        foreach($tmp as $val){
+            array_push($tgt_sumvalue,$val);
         }
-
+    
         $categories = DB::table('categories')
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
         
-
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories'));
+
     }
 }
