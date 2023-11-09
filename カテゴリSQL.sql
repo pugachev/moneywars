@@ -42,3 +42,6 @@ insert into spendings(tgt_item,tgt_date,tgt_payment,created_at,updated_at) value
 
 
 SELECT tgt_date,sum(tgt_payment) FROM `spendings` WHERE tgt_date BETWEEN '2023-10-29' AND '2023-11-04' GROUP BY tgt_date
+
+
+ALTER TABLE spendings ADD tgt_name text; 

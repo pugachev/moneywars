@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Spending extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'tgt_date',
+        'tgt_item',
+        'tgt_name',
+        'tgt_payment',
+    ];
 }

@@ -14,7 +14,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::resource('money', MoneyController::class);
+// Route::resource('money', MoneyController::class);
+Route::get('money', [MoneyController::class, 'index'])->name('money.index');
+Route::get('money/create', [MoneyController::class, 'create'])->name('money.create');
+Route::post('money', [MoneyController::class, 'store'])->name('money.store');
+Route::get('money/{money}', [MoneyController::class, 'show'])->name('money.show');
+Route::get('money/{money}/edit', [MoneyController::class, 'edit'])->name('money.edit');
+Route::patch('money/update', [MoneyController::class, 'update'])->name('money.update');
+Route::post('money/destroy', [MoneyController::class, 'destroy'])->name('money.destroy');
+Route::post('money/preweek', [MoneyController::class, 'preweek'])->name('money.preweek');
+Route::post('money/nextweek', [MoneyController::class, 'nextweek'])->name('money.nextweek');
+
 Route::get('/', function () {
     return view('welcome');
 });
