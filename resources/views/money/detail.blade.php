@@ -191,7 +191,7 @@
         <div class="modal-body">
             <form method="post" action="{{route('money.destroy')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
                 @csrf
-                @method('delete')
+                {{-- @method('delete') --}}
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group mb-1" style="width:100%;">
@@ -217,7 +217,7 @@
                     <input type="hidden" name="did" id="did">
                     <div class="modal-footer text-right">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-                      <button type="submit" class="btn btn-primary">保存</button>
+                      <button type="submit" class="btn btn-danger">削除</button>
                     </div>
                 </div>
             </form>

@@ -1,4 +1,6 @@
 <?php
+header("Cache-Control: private");
+session_cache_limiter('none');
   $firstDate = $tgt_date[0];
   $tgt_date = json_encode($tgt_date);
   $tgt_sumvalue = json_encode($tgt_sumvalue);
