@@ -11,9 +11,6 @@ session_cache_limiter('none');
       $cate_data .= "'>". $val->cate_name. "</option>";
   }
 ?>
-@if(session('message'))
-<div id="alert" class="alert alert-success">{{session('message')}}</div>
-@endif
 <!doctype html>
 <html lang="ja">
   <head>
@@ -24,7 +21,7 @@ session_cache_limiter('none');
     <title>MoneyWars</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top mb-5" >
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top mb-0" >
         <a class="navbar-brand" href="{{route('money.index')}}">MoneyWars</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -40,7 +37,10 @@ session_cache_limiter('none');
           </ul>
         </div>
     </nav>
-    <div class="mx-auto col-12" style="text-align:center;">
+    @if(session('message'))
+    <div id="alert" class="alert alert-success">{{session('message')}}</div>
+    @endif
+    <div class="mx-auto col-12" style="text-align:center;margin-top:85px;">
       <div class="container">
           <div class="row">
               <div class="container d-flex justify-content-between" style="text-align:center;">

@@ -26,13 +26,16 @@
             <li class="nav-item active">
               <a class="nav-link" href="{{route('money.index')}}">集計グラフ</a>
             </li>
-            <li class="nav-item active">
+            {{-- <li class="nav-item active">
               <a class="nav-link" href="#" data-toggle="modal" data-target="#dataCreate">新規作成</a>
-            </li>
+            </li> --}}
           </ul>
         </div>
     </nav>
-    <div class="mx-auto col-12" style="text-align:center;">
+    @if(session('message'))
+      <div id="alert" class="alert alert-success">{{session('message')}}</div>
+    @endif
+    <div class="mx-auto col-12" style="text-align:center;margin-top:85px;">
         <div class="table-responsive-sm text-nowrap">
             <table class="table table-striped">
                 <thead>
