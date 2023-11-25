@@ -62,7 +62,6 @@ class MoneyController extends Controller
         ->orderBy('cate_num','asc')
         ->get();
         
-        // dd($tgt_date);
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
     }
 

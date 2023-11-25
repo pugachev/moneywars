@@ -3,6 +3,7 @@ header("Cache-Control: private");
 session_cache_limiter('none');
   $firstDate = $tgt_date[0];
   $tgt_date = json_encode($tgt_date);
+  $tgt_dates = $tgt_date;
   $tgt_sumvalue = json_encode($tgt_sumvalue);
   $cate_data="";
   //戻りがオブジェクト型
@@ -40,49 +41,47 @@ session_cache_limiter('none');
     @if(session('message'))
     <div id="alert" class="alert alert-success">{{session('message')}}</div>
     @endif
-    <div class="mx-auto col-12" style="text-align:center;margin-top:85px;">
-      <div class="container">
-          <div class="row">
-              <div class="container d-flex justify-content-between" style="text-align:center;">
-                <div class="justify-content-center">
-                  <form method="post" action="{{route('money.preweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
-                    @csrf
-                    <button id="preweek" type="submit" class="btn btn-outline-danger btn-lg">前週</button>
-                    <input type="hidden" value='<?php echo $firstDate; ?>' name="preweek">
-                  </form>
-                </div>
-                <div class="justify-content-center">
-                  <label class="col-form-label">月間目標値</label>
-                  <label class="col-form-label"><mark><strong>100,000</strong></mark></label>
-                </div>
-                <div class="justify-content-center">
-                  <label class="col-form-label"><?php echo date('m'); ?>月合計</label>
-                  <label class="col-form-label"><mark><strong><?php echo number_format($actualresults) ?></strong></mark></label>
-                </div>
-                <div class="justify-content-center">
-                  <form method="post" action="{{route('money.nextweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
-                    @csrf
-                    <button id="nextweek" type="submit" class="btn btn-outline-danger btn-lg">次週</button>
-                    <input type="hidden" value='<?php echo $firstDate; ?>' name="nextweek">
-                  </form>
-                </div>
-              </div>
-              <div class="container" style="text-align:center;position: relative; width: 100%;aspect-ratio: 1.7;">
-                  <canvas id="myChart"></canvas>
-              </div>
-          </div>
-      </div>
-   </div>
 
+      <div class="row">
+            <div class="container d-flex justify-content-between my-3" style="text-align:center;">
+              <div class="justify-content-center">
+                <form method="post" action="{{route('money.preweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
+                  @csrf
+                  <button id="preweek" type="submit" class="btn btn-outline-danger btn-lg">前週</button>
+                  <input type="hidden" value='<?php echo $firstDate; ?>' name="preweek">
+                </form>
+              </div>
+              <div class="justify-content-center">
+                <label class="col-form-label">月間目標値</label>
+                <label class="col-form-label"><mark><strong>100,000</strong></mark></label>
+              </div>
+              <div class="justify-content-center">
+                <label class="col-form-label"><?php echo date('m'); ?>月合計</label>
+                <label class="col-form-label"><mark><strong><?php echo number_format($actualresults) ?></strong></mark></label>
+              </div>
+              <div class="justify-content-center">
+                <form method="post" action="{{route('money.nextweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
+                  @csrf
+                  <button id="nextweek" type="submit" class="btn btn-outline-danger btn-lg">次週</button>
+                  <input type="hidden" value='<?php echo $firstDate; ?>' name="nextweek">
+                </form>
+              </div>
+            </div>
+            <div class="container my-1">
+              <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
     <!-- ここに本文を記述します -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ja.min.js"></script>
     <script type="text/javascript">
+      tgt_dates = <?php echo $tgt_dates; ?>;
       $(function(){
         setTimeout(function () {
             //保存後に画面がリダイレクトされることを利用している
@@ -104,73 +103,110 @@ session_cache_limiter('none');
             }
         });
 
-        var ctx = document.getElementById("myChart").getContext('2d');
-        var context = document.getElementById('myChart');
-        var chart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: <?php echo $tgt_date; ?>,
-            datasets: [
-              {
-                label: '日別 支出合計',
-                data: <?php echo $tgt_sumvalue; ?>,
-                backgroundColor: "rgba(219,39,91,0.5)"
-              }
-            ]
-          },
+        // var ctx = document.getElementById("myChart").getContext('2d');
+        // var context = document.getElementById('myChart');
+        // var chart = new Chart(ctx, {
+        //   type: 'bar',
+        //   data: {
+        //     labels: <?php echo $tgt_date; ?>,
+        //     datasets: [
+        //       {
+        //         label: '日別 支出合計',
+        //         data: <?php echo $tgt_sumvalue; ?>,
+        //         backgroundColor: "rgba(219,39,91,0.5)"
+        //       }
+        //     ]
+        //   },
 
-          // options: {}
-          options: {
-            title: {
-              display: false,
-              text: '支店別 来客数'
+        //   // options: {}
+        //   options: {
+        //     title: {
+        //       display: false,
+        //       text: '支店別 来客数'
+        //     },
+        //     responsive: true,
+        //     maintainAspectRatio: false,
+        //     scales: {
+        //       x: {
+        //         display: true,
+        //         title: {
+        //           display: true,
+        //           text: '日付',
+        //           font: { size: 14 },
+        //         },
+        //       },
+        //       y: {
+        //         display: true,
+        //         title: {
+        //           display: true,
+        //           text: '出費額',
+        //           font: { size: 14 },
+        //         },
+        //         reverse: false,   // 逆向き目盛
+        //         ticks: {
+        //           callback: function(value){
+        //             return value+'円'; // 目盛の編集
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // });
+        let lineCtx = document.getElementById("lineChart").getContext('2d');
+        var context = document.getElementById("lineChart");
+        // 線グラフの設定
+        let lineConfig = {
+            type: 'line',
+            data: {
+              // ※labelとデータの関係は得にありません
+              labels: <?php echo $tgt_date; ?>,
+              datasets: [{
+                  label: '出費週計',
+                  data: <?php echo $tgt_sumvalue; ?>,
+                  borderColor: '#f88',
+              }],
             },
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                display: true,
-                title: {
-                  display: true,
-                  text: '日付',
-                  font: { size: 14 },
-                },
-              },
-              y: {
-                display: true,
-                title: {
-                  display: true,
-                  text: '出費額',
-                  font: { size: 14 },
-                },
-                reverse: false,   // 逆向き目盛
-                ticks: {
-                  callback: function(value){
-                    return value+'円'; // 目盛の編集
+            options: {
+              scales: {
+                  // Y軸の最大値・最小値、目盛りの範囲などを設定する
+                  y: {
+                    suggestedMin: 0,
+                    suggestedMax: 10000,
+                    ticks: {
+                        stepSize: 1000,
+                    }
                   }
-                }
-              }
-            }
-          }
-        });
-
+              },
+              tooltips: {
+                  mode: 'x'
+              },
+              responsive:true,
+            },
+        };
+        let lineChart = new Chart(lineCtx, lineConfig);
         context.addEventListener( 'click', function( evt ){
-            var item = chart.getElementAtEvent( evt );
-            if( item.length == 0 ){
-                return;
-            }
 
-            item = item[0];
-            var index = item._index;
-            // var item_data = item._chart.config.data.datasets;
-            var item_data = item._chart.config.data.labels;
-            // alert( item_data[index]);
-            var tmp = item_data[index];
-            // location.href="{{URL::to('money/')}}";
-            // location.href="{{URL::to('money/')}}?param="+tmp;
-            location.replace("{{ URL::to('money/show') }}?tgt_date="+tmp);
-        });
+              
+              // var item = lineChart.getElementAtEvent(evt);
+              var item = lineChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+              if( item.length == 0 ){
+                  return;
+              }
+
+              item = item[0];
+              var index = item.index;
+              console.log(tgt_dates[index]);
+              // var item_data = item._chart.config.data.datasets;
+              // var item_data = item.chart.config.data.labels;
+              // // alert( item_data[index]);
+              // var tmp = item_data[index];
+              // // location.href="{{URL::to('money/')}}";
+              // // location.href="{{URL::to('money/')}}?param="+tmp;
+              location.replace("{{ URL::to('money/show') }}?tgt_date="+tgt_dates[index]);
+          });
       });
+
+
     </script>
   </body>
 </html>
