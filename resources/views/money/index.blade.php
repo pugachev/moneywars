@@ -74,7 +74,7 @@ session_cache_limiter('none');
           </div>
         </div>
 
-        <div class="container d-flex justify-content-center my-3" style="text-align:center;">
+        <div class="container d-flex justify-content-center my-1" style="text-align:center;">
           <?php if(isset($actualresults) && intval($actualresults) > intval(50000)) :?>
             <div class="justify-content-center mr-5">
               <label class="col-form-label"><strong style="color:red;font-size:20px;">予算 OVER</strong></label>
