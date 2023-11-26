@@ -57,12 +57,24 @@ class MoneyController extends Controller
             array_push($tgt_sumvalue,0);
         }
 
+        //カテゴリ一覧
         $categories = DB::table('categories')
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
-        
-        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
+        //店舗種類一覧
+        $storetypes = DB::table('storetypes')
+        ->select('store_num','store_name')
+        ->orderBy('store_num','asc')
+        ->get();
+        //Amazon使用回数
+        $amazoncount=Spending::groupBy('tgt_date')
+        ->select(DB::raw('count(tgt_storetype) as amazoncnt'))
+        ->where('tgt_storetype','=',11)
+        ->whereBetween('tgt_date',[$start_day,$end_day])
+        ->count();
+        // dd($amazoncount);
+        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','storetypes','actualresults','amazoncount'));
     }
 
     /**
@@ -102,6 +114,7 @@ class MoneyController extends Controller
             'c.cate_name as tgt_itemName',
             'spendings.tgt_name as tgt_name',
             'spendings.tgt_payment as tgt_payment',
+            'spendings.tgt_storetype as tgt_storetype',
           ])
           ->join('categories as c','c.cate_num','=','spendings.tgt_item')
           ->where('spendings.tgt_date','=',$_GET['tgt_date'])
@@ -113,7 +126,12 @@ class MoneyController extends Controller
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
-        return view('money.detail',compact('results','categories'));
+        //店舗種類一覧
+        $storetypes = DB::table('storetypes')
+        ->select('store_num','store_name')
+        ->orderBy('store_num','asc')
+        ->get();
+        return view('money.detail',compact('results','categories','storetypes'));
     }
 
     /**
@@ -209,8 +227,18 @@ class MoneyController extends Controller
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
-        
-        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
+        //店舗種類一覧
+        $storetypes = DB::table('storetypes')
+        ->select('store_num','store_name')
+        ->orderBy('store_num','asc')
+        ->get();
+        //Amazon使用回数
+        $amazoncount=Spending::groupBy('tgt_date')
+        ->select(DB::raw('count(tgt_storetype) as amazoncnt'))
+        ->where('tgt_storetype','=',11)
+        ->whereBetween('tgt_date',[$start_day,$end_day])
+        ->count();
+        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','storetypes','actualresults','amazoncount'));
     }
 
     public function nextweek(Request $request){
@@ -222,13 +250,14 @@ class MoneyController extends Controller
 
         $end_day = date('Y-m-d', strtotime("+6 day", strtotime($start_day)));
 
+        //1週間分の日付を揃える
         if(is_array($tgt_date) && empty($tgt_date)){
             $targetDate = $start_day;
             for($i=0;$i<7;$i++){
                 array_push($tgt_date,date("Y-m-d",strtotime("+{$i} day",strtotime($targetDate))));
             }
         }
-
+        //1週間分のデータで空の場合は0をセットする
         if(is_array($tgt_date)){
             $targetDate = $start_day;
             for($i=0;$i<7;$i++){
@@ -242,6 +271,7 @@ class MoneyController extends Controller
         ->whereBetween('tgt_date',[$start_day,$end_day])
         ->get();
 
+        //用意した1週間分の日付にその日付の合計値を格納する
         foreach($tmp as $key => $val){
             foreach ($results as $result) {
                 if($result['tgt_date']==$key){
@@ -250,6 +280,7 @@ class MoneyController extends Controller
             }
         }
 
+        //処理が冗長な気がする？$tmpで良いのではないかしら？
         foreach($tmp as $val){
             array_push($tgt_sumvalue,$val);
         }
@@ -267,8 +298,18 @@ class MoneyController extends Controller
         ->select('cate_num','cate_name')
         ->orderBy('cate_num','asc')
         ->get();
-        
-        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','actualresults'));
+        //店舗種類一覧
+        $storetypes = DB::table('storetypes')
+        ->select('store_num','store_name')
+        ->orderBy('store_num','asc')
+        ->get();
+        //Amazon使用回数
+        $amazoncount=Spending::groupBy('tgt_date')
+        ->select(DB::raw('count(tgt_storetype) as amazoncnt'))
+        ->where('tgt_storetype','=',11)
+        ->whereBetween('tgt_date',[$start_day,$end_day])
+        ->count();
+        return view('money.index',compact('tgt_date','tgt_sumvalue','categories','storetypes','actualresults','amazoncount'));
 
     }
 }

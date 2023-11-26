@@ -5,6 +5,12 @@
       $cate_data .= "<option value='". $val->cate_num;
       $cate_data .= "'>". $val->cate_name. "</option>";
   }
+  $store_data="";
+  //戻りがオブジェクト型
+  foreach($storetypes as $val){
+      $store_data .= "<option value='". $val->store_num;
+      $store_data .= "'>". $val->store_name. "</option>";
+  }
 ?>
 <!doctype html>
 <html lang="ja">
@@ -44,6 +50,7 @@
                         <th class="text-center">日付</th>
                         <th class="text-center">カテゴリ</th>
                         <th class="text-center">項目名</th>
+                        <th class="text-center">店舗種別</th>
                         <th class="text-center">支出額</th>
                         <th class="text-center">編集</th>
                         <th class="text-center">削除</th>
@@ -58,14 +65,15 @@
                           echo '<td>'.date('Y-m-d',strtotime($result->tgt_date)).'</td>';
                           echo '<td>'.$result->tgt_itemName.'</td>';
                           echo '<td class="text-center">'.$result->tgt_name.'</td>';
+                          echo '<td class="text-center">'.$result->tgt_storetype.'</td>';
                           echo '<td class="text-center">'.$result->tgt_payment.'</td>';
                           echo '<td class="text-center">';
-                          echo '<button type="button" class="btn btn-primary" data-toggle="modal" onclick="row_updatedata(this)" data-id="'.$result->id.'"data-target="#dataUpdate" data-tgt_date="'.date('Y-m-d',strtotime($result->tgt_date)).'" data-tgt_item="'.$result->tgt_item.'" data-tgt_payment="'.$result->tgt_payment.'" data-tgt_name="'.$result->tgt_name.'">';
+                          echo '<button type="button" class="btn btn-primary" data-toggle="modal" onclick="row_updatedata(this)" data-id="'.$result->id.'"data-target="#dataUpdate" data-tgt_date="'.date('Y-m-d',strtotime($result->tgt_date)).'" data-tgt_item="'.$result->tgt_item.'" data-tgt_storetype="'.$result->tgt_storetype.'" data-tgt_payment="'.$result->tgt_payment.'" data-tgt_name="'.$result->tgt_name.'">';
                           echo '編集';
                           echo '</button>';
                           echo '</td>';
                           echo '<td class="text-center">';
-                            echo '<button type="button" class="btn btn-danger" data-toggle="modal" onclick="row_deletedata(this)" data-id="'.$result->id.'"data-target="#dataDelete" data-tgt_date="'.date('Y-m-d',strtotime($result->tgt_date)).'" data-tgt_item="'.$result->tgt_item.'" data-tgt_payment="'.$result->tgt_payment.'" data-tgt_name="'.$result->tgt_name.'">';
+                            echo '<button type="button" class="btn btn-danger" data-toggle="modal" onclick="row_deletedata(this)" data-id="'.$result->id.'"data-target="#dataDelete" data-tgt_date="'.date('Y-m-d',strtotime($result->tgt_date)).'" data-tgt_item="'.$result->tgt_item.'" data-tgt_storetype="'.$result->tgt_storetype.'" data-tgt_payment="'.$result->tgt_payment.'" data-tgt_name="'.$result->tgt_name.'">';
                           echo '削除';
                           echo '</button>';
                           echo '</td>';
@@ -103,6 +111,7 @@
         let id = data.dataset.id;//id
         let tgt_date =data.dataset.tgt_date;//支出日
         let tgt_item = data.dataset.tgt_item;//アイテム番号
+        let tgt_storetype = data.dataset.tgt_storetype;//店舗種別
         let tgt_payment = data.dataset.tgt_payment;//支出額
         let tgt_name = data.dataset.tgt_name;//項目名
         $('#updateId').val(id);
@@ -112,6 +121,7 @@
             modal.find('#uid').val(id);
             modal.find('#utgt_date').val(tgt_date);
             modal.find('#utgt_item').val(tgt_item);
+            modal.find('#utgt_storetype').val(tgt_storetype);
             modal.find('#utgt_payment').val(tgt_payment);
             modal.find('#utgt_name').val(tgt_name);
         });
@@ -120,6 +130,7 @@
         let id = data.dataset.id;//id
         let tgt_date =data.dataset.tgt_date;//支出日
         let tgt_item = data.dataset.tgt_item;//アイテム番号
+        let tgt_storetype = data.dataset.tgt_storetype;//店舗種別
         let tgt_payment = data.dataset.tgt_payment;//支出額
         let tgt_name = data.dataset.tgt_name;//項目名
         $('#dataDelete').on('show.bs.modal', function(e) {
@@ -127,6 +138,7 @@
             modal.find('#did').val(id);
             modal.find('#dtgt_date').val(tgt_date);
             modal.find('#dtgt_item').val(tgt_item);
+            modal.find('#dtgt_storetype').val(tgt_storetype);
             modal.find('#dtgt_payment').val(tgt_payment);
             modal.find('#dtgt_name').val(tgt_name);
         });
@@ -164,7 +176,13 @@
                       <div class="form-group mb-1" style="width:100%;">
                         <span class="col-3">項目名</span>
                         <input type="text" id="utgt_name" name="utgt_name" class="form-control">
-                     </div>
+                      </div>
+                      <div class="form-group mb-1" style="width:100%;">
+                          <span class="col-3">店舗種別</span>
+                          <select name="utgt_storetype" id="utgt_storetype" class="browser-default custom-select">
+                              <?php echo $store_data; ?>
+                          </select>
+                      </div>
                       <div class="form-group mb-1" style="width:100%;">
                           <span class="col-3">支出額</span>
                           <input type="text" id="utgt_payment" name="utgt_payment" class="form-control">
@@ -212,6 +230,12 @@
                             <span class="col-3">項目名</span>
                             <input type="text" id="dtgt_name" name="dtgt_name" disabled="disabled" class="form-control">
                          </div>
+                         <div class="form-group mb-1" style="width:100%;">
+                            <span class="col-3">店舗種別</span>
+                            <select name="dtgt_storetype" id="dtgt_storetype" class="browser-default custom-select">
+                                <?php echo $store_data; ?>
+                            </select>
+                        </div>
                         <div class="form-group mb-1" style="width:100%;">
                             <span class="col-3">支出額</span>
                             <input type="text" id="dtgt_payment" name="dtgt_payment" disabled="disabled" class="form-control">

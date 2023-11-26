@@ -47,6 +47,19 @@ INSERT INTO `categories` (`id`, `cate_num`, `cate_name`) VALUES
 (8, 106, 'サービス費');
 
 -- --------------------------------------------------------
+CREATE TABLE `storetypes` (
+  `id` SERIAL PRIMARY KEY NOT NULL,
+  `store_num` int(11) NOT NULL,
+  `store_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `storetypes` (`store_num`, `store_name`) VALUES
+(10, '実店舗'),
+(11, 'Amazon');
+
+ALTER TABLE spendings ADD tgt_storetype int(11) NOT NULL DEFAULT 10;
+
+UPDATE spendings SET tgt_storetype=10;
 
 --
 -- テーブルの構造 `failed_jobs`

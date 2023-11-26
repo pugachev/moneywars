@@ -11,6 +11,12 @@ session_cache_limiter('none');
       $cate_data .= "<option value='". $val->cate_num;
       $cate_data .= "'>". $val->cate_name. "</option>";
   }
+  $store_data="";
+  //戻りがオブジェクト型
+  foreach($storetypes as $val){
+      $store_data .= "<option value='". $val->store_num;
+      $store_data .= "'>". $val->store_name. "</option>";
+  }
 ?>
 <!doctype html>
 <html lang="ja">
@@ -42,34 +48,46 @@ session_cache_limiter('none');
     <div id="alert" class="alert alert-success">{{session('message')}}</div>
     @endif
 
-      <div class="row">
-            <div class="container d-flex justify-content-between my-3" style="text-align:center;">
-              <div class="justify-content-center">
-                <form method="post" action="{{route('money.preweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
-                  @csrf
-                  <button id="preweek" type="submit" class="btn btn-outline-danger btn-lg">前週</button>
-                  <input type="hidden" value='<?php echo $firstDate; ?>' name="preweek">
-                </form>
-              </div>
-              <div class="justify-content-center">
-                <label class="col-form-label">月間目標値</label>
-                <label class="col-form-label"><mark><strong>100,000</strong></mark></label>
-              </div>
-              <div class="justify-content-center">
-                <label class="col-form-label"><?php echo date('m'); ?>月合計</label>
-                <label class="col-form-label"><mark><strong><?php echo number_format($actualresults) ?></strong></mark></label>
-              </div>
-              <div class="justify-content-center">
-                <form method="post" action="{{route('money.nextweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
-                  @csrf
-                  <button id="nextweek" type="submit" class="btn btn-outline-danger btn-lg">次週</button>
-                  <input type="hidden" value='<?php echo $firstDate; ?>' name="nextweek">
-                </form>
-              </div>
+    <div class="row">
+        <div class="container d-flex justify-content-between my-3" style="text-align:center;">
+          <div class="justify-content-center">
+            <form method="post" action="{{route('money.preweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
+              @csrf
+              <button id="preweek" type="submit" class="btn btn-outline-danger btn-lg">前週</button>
+              <input type="hidden" value='<?php echo $firstDate; ?>' name="preweek">
+            </form>
+          </div>
+          <div class="justify-content-center">
+            <label class="col-form-label">月間目標値</label>
+            <label class="col-form-label"><mark><strong>100,000</strong></mark></label>
+          </div>
+          <div class="justify-content-center">
+            <label class="col-form-label"><?php echo date('m'); ?>月合計</label>
+            <label class="col-form-label"><mark><strong><?php echo number_format($actualresults) ?></strong></mark></label>
+          </div>
+          <div class="justify-content-center">
+            <form method="post" action="{{route('money.nextweek')}}" class="form-inline" enctype="multipart/form-data" autocomplete="off">
+              @csrf
+              <button id="nextweek" type="submit" class="btn btn-outline-danger btn-lg">次週</button>
+              <input type="hidden" value='<?php echo $firstDate; ?>' name="nextweek">
+            </form>
+          </div>
+        </div>
+
+        <div class="container d-flex justify-content-center my-3" style="text-align:center;">
+          <?php if(isset($actualresults) && intval($actualresults) > intval(50000)) :?>
+            <div class="justify-content-center mr-5">
+              <label class="col-form-label"><strong style="color:red;font-size:20px;">予算 OVER</strong></label>
             </div>
-            <div class="container my-1">
-              <canvas id="lineChart"></canvas>
+          <?php endif; ?>
+          <?php if(isset($amazoncount) && intval($amazoncount) > intval(5)) :?>
+            <div class="justify-content-center mr-5">
+              <label class="col-form-label"><strong style="color:red;font-size:20px;">Amazon OVER</strong></label>
             </div>
+          <?php endif; ?>
+        </div>
+        <div class="container my-1">
+          <canvas id="lineChart"></canvas>
         </div>
     </div>
     <!-- ここに本文を記述します -->
@@ -103,57 +121,8 @@ session_cache_limiter('none');
             }
         });
 
-        // var ctx = document.getElementById("myChart").getContext('2d');
-        // var context = document.getElementById('myChart');
-        // var chart = new Chart(ctx, {
-        //   type: 'bar',
-        //   data: {
-        //     labels: <?php echo $tgt_date; ?>,
-        //     datasets: [
-        //       {
-        //         label: '日別 支出合計',
-        //         data: <?php echo $tgt_sumvalue; ?>,
-        //         backgroundColor: "rgba(219,39,91,0.5)"
-        //       }
-        //     ]
-        //   },
-
-        //   // options: {}
-        //   options: {
-        //     title: {
-        //       display: false,
-        //       text: '支店別 来客数'
-        //     },
-        //     responsive: true,
-        //     maintainAspectRatio: false,
-        //     scales: {
-        //       x: {
-        //         display: true,
-        //         title: {
-        //           display: true,
-        //           text: '日付',
-        //           font: { size: 14 },
-        //         },
-        //       },
-        //       y: {
-        //         display: true,
-        //         title: {
-        //           display: true,
-        //           text: '出費額',
-        //           font: { size: 14 },
-        //         },
-        //         reverse: false,   // 逆向き目盛
-        //         ticks: {
-        //           callback: function(value){
-        //             return value+'円'; // 目盛の編集
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        // });
         let lineCtx = document.getElementById("lineChart").getContext('2d');
-        var context = document.getElementById("lineChart");
+        let context = document.getElementById("lineChart");
         // 線グラフの設定
         let lineConfig = {
             type: 'line',
@@ -185,23 +154,12 @@ session_cache_limiter('none');
         };
         let lineChart = new Chart(lineCtx, lineConfig);
         context.addEventListener( 'click', function( evt ){
-
-              
-              // var item = lineChart.getElementAtEvent(evt);
               var item = lineChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
               if( item.length == 0 ){
                   return;
               }
-
               item = item[0];
               var index = item.index;
-              console.log(tgt_dates[index]);
-              // var item_data = item._chart.config.data.datasets;
-              // var item_data = item.chart.config.data.labels;
-              // // alert( item_data[index]);
-              // var tmp = item_data[index];
-              // // location.href="{{URL::to('money/')}}";
-              // // location.href="{{URL::to('money/')}}?param="+tmp;
               location.replace("{{ URL::to('money/show') }}?tgt_date="+tgt_dates[index]);
           });
       });
@@ -238,6 +196,12 @@ session_cache_limiter('none');
                       <div class="form-group mb-1" style="width:100%;">
                           <span class="col-3">項目名</span>
                           <input type="text" id="tgt_name" name="tgt_name" class="form-control">
+                      </div>
+                      <div class="form-group mb-1" style="width:100%;">
+                          <span class="col-3">店舗種別</span>
+                          <select name="tgt_storetype" id="tgt_storetype" class="browser-default custom-select">
+                              <?php echo $store_data; ?>
+                          </select>
                       </div>
                       <div class="form-group mb-1" style="width:100%;">
                           <span class="col-3">支出額</span>
