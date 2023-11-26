@@ -68,12 +68,15 @@ class MoneyController extends Controller
         ->orderBy('store_num','asc')
         ->get();
         //Amazon使用回数
-        $amazoncount=Spending::groupBy('tgt_date')
-        ->select(DB::raw('count(tgt_storetype) as amazoncnt'))
+        $first_date = date("Y-m-01");
+        $last_date = date("Y-m-t");
+        $amazoncount=Spending::select(DB::raw('sum(tgt_payment) as amazoncnt'))
         ->where('tgt_storetype','=',11)
-        ->whereBetween('tgt_date',[$start_day,$end_day])
-        ->count();
-        // dd($amazoncount);
+        ->whereBetween('tgt_date',[$first_date,$last_date])
+        ->get();
+        // dd($amazoncount->toSql(),$amazoncount->getBindings());
+        // dd($amazoncount[0]['amazoncnt']);
+        $amazoncount = $amazoncount[0]['amazoncnt'];
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories','storetypes','actualresults','amazoncount'));
     }
 
@@ -95,6 +98,7 @@ class MoneyController extends Controller
         $spending->tgt_date=date('Y-m-d',strtotime($request->tgt_date));
         $spending->tgt_item=$request->tgt_item;
         $spending->tgt_name=$request->tgt_name;
+        $spending->tgt_storetype=$request->tgt_storetype;
         $spending->tgt_payment=$request->tgt_payment;
         $spending->save();
 
@@ -157,6 +161,7 @@ class MoneyController extends Controller
         $spending = Spending::find($request->uid);
         $spending->tgt_date=date('Y-m-d',strtotime($request->utgt_date));
         $spending->tgt_item=$request->utgt_item;
+        $spending->tgt_storetype=$request->utgt_storetype;
         $spending->tgt_payment=$request->utgt_payment;
         $spending->tgt_name=$request->utgt_name;
         $spending->save();
@@ -233,11 +238,15 @@ class MoneyController extends Controller
         ->orderBy('store_num','asc')
         ->get();
         //Amazon使用回数
-        $amazoncount=Spending::groupBy('tgt_date')
-        ->select(DB::raw('count(tgt_storetype) as amazoncnt'))
+        $first_date = date("Y-m-01");
+        $last_date = date("Y-m-t");
+        $amazoncount=Spending::select(DB::raw('sum(tgt_payment) as amazoncnt'))
         ->where('tgt_storetype','=',11)
-        ->whereBetween('tgt_date',[$start_day,$end_day])
-        ->count();
+        ->whereBetween('tgt_date',[$first_date,$last_date])
+        ->get();
+        // dd($amazoncount->toSql(),$amazoncount->getBindings());
+        // dd($amazoncount[0]['amazoncnt']);
+        $amazoncount = $amazoncount[0]['amazoncnt'];
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories','storetypes','actualresults','amazoncount'));
     }
 
@@ -304,11 +313,15 @@ class MoneyController extends Controller
         ->orderBy('store_num','asc')
         ->get();
         //Amazon使用回数
-        $amazoncount=Spending::groupBy('tgt_date')
-        ->select(DB::raw('count(tgt_storetype) as amazoncnt'))
+        $first_date = date("Y-m-01");
+        $last_date = date("Y-m-t");
+        $amazoncount=Spending::select(DB::raw('sum(tgt_payment) as amazoncnt'))
         ->where('tgt_storetype','=',11)
-        ->whereBetween('tgt_date',[$start_day,$end_day])
-        ->count();
+        ->whereBetween('tgt_date',[$first_date,$last_date])
+        ->get();
+        // dd($amazoncount->toSql(),$amazoncount->getBindings());
+        // dd($amazoncount[0]['amazoncnt']);
+        $amazoncount = $amazoncount[0]['amazoncnt'];
         return view('money.index',compact('tgt_date','tgt_sumvalue','categories','storetypes','actualresults','amazoncount'));
 
     }

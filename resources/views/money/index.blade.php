@@ -75,12 +75,12 @@ session_cache_limiter('none');
         </div>
 
         <div class="container d-flex justify-content-center my-1" style="text-align:center;">
-          <?php if(isset($actualresults) && intval($actualresults) > intval(50000)) :?>
+          <?php if(isset($actualresults) && intval($actualresults) > intval(80000)) :?>
             <div class="justify-content-center mr-5">
               <label class="col-form-label"><strong style="color:red;font-size:20px;">予算 OVER</strong></label>
             </div>
           <?php endif; ?>
-          <?php if(isset($amazoncount) && intval($amazoncount) > intval(5)) :?>
+          <?php if(isset($amazoncount) && intval($amazoncount) > intval(50000)) :?>
             <div class="justify-content-center mr-5">
               <label class="col-form-label"><strong style="color:red;font-size:20px;">Amazon OVER</strong></label>
             </div>
