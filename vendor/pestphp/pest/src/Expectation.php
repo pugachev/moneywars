@@ -34,8 +34,6 @@ use PHPUnit\Architecture\Elements\ObjectDescription;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
- * @internal
- *
  * @template TValue
  *
  * @property OppositeExpectation $not Creates the opposite expectation.
@@ -192,7 +190,7 @@ final class Expectation
      *
      * @return EachExpectation<TValue>
      */
-    public function each(callable $callback = null): EachExpectation
+    public function each(?callable $callback = null): EachExpectation
     {
         if (! is_iterable($this->value)) {
             throw new BadMethodCallException('Expectation value is not iterable.');
