@@ -18,6 +18,7 @@ use Pest\Support\HigherOrderCallables;
 use Pest\Support\NullClosure;
 use Pest\Support\Str;
 use Pest\TestSuite;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -55,6 +56,14 @@ final class TestCall
         $this->describing = DescribeCall::describing();
 
         $this->testSuite->beforeEach->get($this->filename)[0]($this);
+    }
+
+    /**
+     * Asserts that the test fails with the given message.
+     */
+    public function fails(?string $message = null): self
+    {
+        return $this->throws(AssertionFailedError::class, $message);
     }
 
     /**
